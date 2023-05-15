@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -build",
+    "counter": "npx func-js func/stdlib.fc func/counter.fc --boc func/counter.cell",
     "start": "node dist/src/ton.js",
     "start:dev": "yarn build && ts-node src/ton.ts"
   },
@@ -20,7 +21,8 @@
   },
   "devDependencies": {
     "@types/node": "^18.13.0",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "@ton-community/func-js": "^0.6.1"
   },
   "references": [
     {

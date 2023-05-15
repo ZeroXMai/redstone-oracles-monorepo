@@ -2,7 +2,9 @@ import { config } from "./config";
 
 import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { mnemonicToWalletKey } from "ton-crypto";
-import { TonClient, WalletContractV4, fromNano, internal } from "ton";
+import { TonClient, WalletContractV4, OpenedContract } from "ton";
+import Counter from "./counter";
+import { Address, Sender } from "ton-core";
 
 async function main() {
   // open wallet v4 (notice the correct wallet version here)
@@ -16,32 +18,46 @@ async function main() {
   const endpoint = await getHttpEndpoint({ network: "testnet" });
   const client = new TonClient({ endpoint });
 
+  const walletContract = client.open(wallet);
+  const walletSender = walletContract.sender(key.secretKey);
+
   // make sure wallet is deployed
   if (!(await client.isContractDeployed(wallet.address))) {
     return console.log("wallet is not deployed");
   }
 
-  // query balance from chain
-  const balance = await client.getBalance(wallet.address);
-  console.log("balance:", fromNano(balance));
-
-  // query seqno from chain
-  const walletContract = client.open(wallet);
-  const seqno = await walletContract.getSeqno();
-  console.log("seqno:", seqno);
-
-  await walletContract.sendTransfer({
-    secretKey: key.secretKey,
-    seqno: seqno,
-    messages: [
-      internal({
-        to: "EQA4V9tF4lY2S_J-sEQR7aUj9IwW-Ou2vJQlCn--2DLOLR5e",
-        value: "0.001", // 0.05 TON
-        body: "Hello", // optional comment
-        bounce: false,
-      }),
-    ],
+  await wait(walletContract, () => {
+    deploy(client, walletSender);
   });
+
+  // open Counter instance by address
+  const counterAddress = Address.parse(
+    "EQAOpcyRDCEMXCfqubfID8pU1BNkHisT-paDyIzIG5H7pJzd"
+  ); // replace with your address from step 8
+  const counter = new Counter(counterAddress);
+  const counterContract = client.open(counter);
+
+  let counterValue = await counterContract.getCounter();
+  console.log("value:", counterValue.toString());
+
+  await wait(walletContract, () => {
+    counterContract.sendIncrement(walletSender);
+  });
+
+  // call the getter on chain
+  counterValue = await counterContract.getCounter();
+  console.log("value:", counterValue.toString());
+}
+
+main();
+
+async function wait(
+  walletContract: OpenedContract<WalletContractV4>,
+  callback: () => void
+): Promise<void> {
+  const seqno = await walletContract.getSeqno();
+
+  await callback();
 
   // wait until confirmed
   let currentSeqno = seqno;
@@ -53,7 +69,21 @@ async function main() {
   console.log("transaction confirmed!");
 }
 
-main();
+async function deploy(client: TonClient, sender: Sender) {
+  const initialCounterValue = Date.now(); // to avoid collisions use current number of milliseconds since epoch as initial value
+  const counter = Counter.createForDeploy(initialCounterValue);
+
+  // exit if contract is already deployed
+  console.log("contract address:", counter.address.toString());
+  if (await client.isContractDeployed(counter.address)) {
+    return console.log("Counter already deployed");
+  }
+
+  // send the deploy transaction
+  const counterContract = client.open(counter);
+
+  await counterContract.sendDeploy(sender);
+}
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
