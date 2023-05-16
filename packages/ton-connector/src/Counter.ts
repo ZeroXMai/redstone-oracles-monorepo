@@ -10,10 +10,10 @@ import {
 import fs from "fs";
 
 export default class Counter implements Contract {
-  static createForDeploy(initialCounterValue: number): Counter {
+  static createForDeploy(): Counter {
     const code = Cell.fromBoc(fs.readFileSync("func/counter.cell"))[0]; // compilation output from step 6
 
-    const data = beginCell().storeUint(initialCounterValue, 64).endCell();
+    const data = beginCell().endCell();
     const workchain = 0; // deploy to workchain 0
     const address = contractAddress(workchain, { code, data });
     return new Counter(address, { code, data });
@@ -35,6 +35,8 @@ export default class Counter implements Contract {
     const messageBody = beginCell()
       .storeUint(1, 32) // op (op #1 = increment)
       .storeUint(0, 64) // query id
+      .storeUint(333, 256)
+      .storeUint(199994, 256)
       .endCell();
     await provider.internal(via, {
       value: "0.002", // send 0.002 TON for gas
@@ -42,8 +44,11 @@ export default class Counter implements Contract {
     });
   }
 
-  async getCounter(provider: ContractProvider) {
-    const { stack } = await provider.get("counter", []);
+  async getKey(provider: ContractProvider) {
+    const { stack } = await provider.get("get_key", [
+      { type: "int", value: 333 as unknown as bigint },
+    ]);
+
     return stack.readBigNumber();
   }
 }

@@ -6,9 +6,9 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf dist && tsc -build",
-    "counter": "npx func-js func/stdlib.fc func/counter.fc --boc func/counter.cell",
+    "contract": "npx func-js func/stdlib.fc func/counter.fc --boc func/counter.cell && yarn build && ts-node src/start.ts --deploy=1",
     "start": "node dist/src/ton.js",
-    "start:dev": "yarn build && ts-node src/ton.ts"
+    "ton": "yarn build && ts-node src/start.ts"
   },
   "dependencies": {
     "dotenv": "^16.0.3",
