@@ -34,19 +34,27 @@ export default class Counter implements Contract {
   async sendIncrement(provider: ContractProvider, via: Sender) {
     const messageBody = beginCell()
       .storeUint(1, 32) // op (op #1 = increment)
-      .storeUint(0, 64) // query id
-      .storeUint(333, 256)
-      .storeUint(199994, 256)
-      .endCell();
+      .storeUint(0, 64); // query id
+
+    for (let i = 0; i < 4; i++) {
+      const cell = beginCell()
+        .storeUint((i + 1) * 111, 256)
+        .storeUint((i + 1) * 100000, 256)
+        .endCell();
+      messageBody.storeRef(cell);
+    }
+
+    const body = messageBody.endCell();
+
     await provider.internal(via, {
-      value: "0.002", // send 0.002 TON for gas
-      body: messageBody,
+      value: "0.02", // send 0.02 TON for gas
+      body,
     });
   }
 
   async getKey(provider: ContractProvider) {
     const { stack } = await provider.get("get_key", [
-      { type: "int", value: 333 as unknown as bigint },
+      { type: "int", value: 444 as unknown as bigint },
     ]);
 
     return stack.readBigNumber();

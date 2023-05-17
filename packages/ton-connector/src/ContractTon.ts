@@ -24,9 +24,9 @@ export class ContractTon extends Ton {
   override async perform() {
     await this.connect();
 
-    // await this.wait(() => {
-    //   this.counterContract!.sendIncrement(this.walletSender!);
-    // });
+    await this.wait(() => {
+      this.counterContract!.sendIncrement(this.walletSender!);
+    });
 
     return await this.counterContract?.getKey();
   }

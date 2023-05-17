@@ -12,7 +12,7 @@ async function main() {
       console.log(
         await (
           await new ContractTon(
-            "EQAewcCIIGypol8u2g0ljMTXloB3sGs2gyPSm2_tPHbYZnSb"
+            "EQDM4ScXfF2YITymKKX2z7oJ7ys4gPfSJNFdS-FrafB3PTj2"
           ).connect()
         ).perform()
       );

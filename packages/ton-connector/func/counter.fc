@@ -25,9 +25,19 @@ cell load_data() impure {
   cell dic = load_data();
 
   if (op == 1) {
-    int key = in_msg_body~load_uint(256);
-    ~strdump(key);
-    dic~udict_set(256, key, in_msg_body);
+      repeat (in_msg_body.slice_refs()) {
+        cell c = in_msg_body~load_ref();
+        slice s = c.begin_parse();
+
+        int key = s~load_uint(256);
+        ~strdump(key);
+
+        int val = s~load_uint(256);
+        slice v = begin_cell().store_uint(val, 256).end_cell().begin_parse();
+
+        dic~udict_set(256, key, v);
+      }
+
     set_data(dic);
 
     return ();

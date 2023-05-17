@@ -15,8 +15,7 @@ export class DeployTon extends Ton {
   }
 
   private async deploy(client: TonClient, sender: Sender) {
-    const initialCounterValue = Date.now(); // to avoid collisions use current number of milliseconds since epoch as initial value
-    const counter = Counter.createForDeploy(initialCounterValue);
+    const counter = Counter.createForDeploy();
 
     // exit if contract is already deployed
     console.log("contract address:", counter.address.toString());
