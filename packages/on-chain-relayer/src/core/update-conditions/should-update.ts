@@ -8,7 +8,7 @@ export const shouldUpdate = (context: Context): ConditionCheckResponse => {
   const warningMessages: string[] = [];
   let shouldUpdatePrices = false;
   for (const conditionName of updateConditions) {
-    const conditionCheck = checkConditionByName(context)[conditionName];
+    const conditionCheck = checkConditionByName(context)[conditionName]();
     shouldUpdatePrices =
       shouldUpdatePrices || conditionCheck.shouldUpdatePrices;
     if (conditionCheck.warningMessage.length > 0) {
@@ -22,9 +22,7 @@ export const shouldUpdate = (context: Context): ConditionCheckResponse => {
 };
 
 const checkConditionByName = (context: Context) => ({
-  time: timeUpdateCondition(context.lastUpdateTimestamp),
-  "value-deviation": valueDeviationCondition(
-    context.dataPackages,
-    context.valuesFromContract
-  ),
+  time: () => timeUpdateCondition(context.lastUpdateTimestamp),
+  "value-deviation": () =>
+    valueDeviationCondition(context.dataPackages, context.valuesFromContract),
 });
