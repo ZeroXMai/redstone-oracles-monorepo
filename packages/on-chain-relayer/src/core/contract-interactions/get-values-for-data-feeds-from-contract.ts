@@ -3,7 +3,7 @@ import { config } from "../../config";
 import { ValuesForDataFeeds } from "../../types";
 
 // TODO: rewrite this file, as now we even support getting values from smart contract for MentoAdapter
-export const getValuesForDataFeeds = async (
+export const getValuesForDataFeedsFromContract = async (
   priceFeedsAdapterContract: Contract,
   dataFeeds: string[]
 ): Promise<ValuesForDataFeeds> => {

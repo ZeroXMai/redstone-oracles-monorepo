@@ -6,6 +6,8 @@ import {
   mockEnvVariables,
 } from "../helpers";
 import { ValuesForDataFeeds } from "../../src/types";
+import { getValuesForDataFeedsFromContract } from "../../src/core/contract-interactions/get-values-for-data-feeds-from-contract";
+import { IRedstoneAdapter } from "../../typechain-types";
 
 describe("should-update", () => {
   before(() => {
@@ -18,10 +20,12 @@ describe("should-update", () => {
       ETH: createNumberFromContract(1630.99),
       BTC: createNumberFromContract(23011.68),
     };
+    mockGetValuesFromContract(smallerValueDiff);
+
     const lastUpdateTimestamp = Date.now() - 1;
-    const { shouldUpdatePrices, warningMessage } = shouldUpdate({
+    const { shouldUpdatePrices, warningMessage } = await shouldUpdate({
       dataPackages,
-      valuesFromContract: smallerValueDiff,
+      adapterContract: {} as IRedstoneAdapter,
       lastUpdateTimestamp,
     });
     expect(shouldUpdatePrices).to.be.false;
@@ -39,10 +43,12 @@ describe("should-update", () => {
       ETH: createNumberFromContract(1230.99),
       BTC: createNumberFromContract(13011.68),
     };
+    mockGetValuesFromContract(biggerValueDiff);
+
     const lastUpdateTimestamp = Date.now() - 1;
-    const { shouldUpdatePrices, warningMessage } = shouldUpdate({
+    const { shouldUpdatePrices, warningMessage } = await shouldUpdate({
       dataPackages,
-      valuesFromContract: biggerValueDiff,
+      adapterContract: {} as IRedstoneAdapter,
       lastUpdateTimestamp,
     });
     expect(shouldUpdatePrices).to.be.true;
@@ -57,10 +63,12 @@ describe("should-update", () => {
       ETH: createNumberFromContract(1630.99),
       BTC: createNumberFromContract(23011.68),
     };
+    mockGetValuesFromContract(smallerValueDiff);
+
     const lastUpdateTimestamp = Date.now() - 100000;
-    const { shouldUpdatePrices, warningMessage } = shouldUpdate({
+    const { shouldUpdatePrices, warningMessage } = await shouldUpdate({
       dataPackages,
-      valuesFromContract: smallerValueDiff,
+      adapterContract: {} as IRedstoneAdapter,
       lastUpdateTimestamp,
     });
     expect(shouldUpdatePrices).to.be.true;
@@ -79,11 +87,12 @@ describe("should-update", () => {
       timestamp: createNumberFromContract(124567, 0),
       timestamp2: createNumberFromContract(1247, 2),
     };
+    mockGetValuesFromContract(sameValue);
 
     const lastUpdateTimestamp = Date.now() - 100000;
-    const { warningMessage } = shouldUpdate({
+    const { warningMessage } = await shouldUpdate({
       dataPackages,
-      valuesFromContract: sameValue,
+      adapterContract: {} as IRedstoneAdapter,
       lastUpdateTimestamp,
     });
     expect(warningMessage).to.be.equal(
@@ -95,17 +104,20 @@ describe("should-update", () => {
     const dataPackages = await getDataPackagesResponse([
       { value: 124567, dataFeedId: "timestamp", decimals: 0 },
     ]);
-
     const sameValue: ValuesForDataFeeds = {
       timestamp: createNumberFromContract(Math.floor(124567 * 0.8), 0),
     };
+    mockGetValuesFromContract(sameValue);
 
     const lastUpdateTimestamp = Date.now() - 100000;
-    const { warningMessage } = shouldUpdate({
+    const { warningMessage } = await shouldUpdate({
       dataPackages,
-      valuesFromContract: sameValue,
+      adapterContract: {} as IRedstoneAdapter,
       lastUpdateTimestamp,
     });
     expect(warningMessage).to.be.equal(`[]`);
   });
 });
+
+const mockGetValuesFromContract = (values: ValuesForDataFeeds) =>
+  ((getValuesForDataFeedsFromContract as {}) = () => values);

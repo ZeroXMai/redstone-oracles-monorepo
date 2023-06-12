@@ -1,16 +1,21 @@
 import { INumericDataPoint } from "redstone-protocol";
 import { DataPackagesResponse } from "redstone-sdk";
 import { config } from "../../config";
-import { ValuesForDataFeeds } from "../../types";
 import { formatUnits } from "ethers/lib/utils";
+import { getValuesForDataFeedsFromContract } from "../contract-interactions/get-values-for-data-feeds-from-contract";
+import { IRedstoneAdapter } from "../../../typechain-types";
 
 const DEFAULT_DECIMALS = 8;
 
-export const valueDeviationCondition = (
+export const valueDeviationCondition = async (
   dataPackages: DataPackagesResponse,
-  valuesFromContract: ValuesForDataFeeds
+  adapterContract: IRedstoneAdapter
 ) => {
   const dataFeedsIds = Object.keys(dataPackages);
+  const valuesFromContract = await getValuesForDataFeedsFromContract(
+    adapterContract,
+    dataFeedsIds
+  );
 
   let maxDeviation = 0;
   for (const dataFeedId of dataFeedsIds) {
@@ -20,7 +25,7 @@ export const valueDeviationCondition = (
         const dataPointObj = dataPoint.toObj() as INumericDataPoint;
         const valueFromContractAsDecimal = Number(
           formatUnits(
-            valueFromContract.toString(),
+            (valueFromContract ?? 0).toString(),
             dataPointObj.decimals ?? DEFAULT_DECIMALS
           )
         );
