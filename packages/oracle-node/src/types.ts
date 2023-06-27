@@ -1,3 +1,4 @@
+import { NumberLike } from "redstone-protocol/src/common/utils";
 import { ISafeNumber } from "./numbers/ISafeNumber";
 
 export interface Manifest {
@@ -95,12 +96,13 @@ export interface PriceSource<T> {
   [sourceName: string]: T;
 }
 
-export interface PriceDataAfterAggregation
+export interface PriceDataAfterAggregation<V = ISafeNumber>
   extends SanitizedPriceDataBeforeAggregation {
-  value: ISafeNumber;
+  value: V;
 }
 
-export interface PriceDataBeforeSigning extends PriceDataAfterAggregation {
+export interface PriceDataBeforeSigning
+  extends PriceDataAfterAggregation<number> {
   permawebTx: string;
   provider: string;
 }
@@ -112,7 +114,7 @@ export interface PriceDataSigned extends PriceDataBeforeSigning {
 
 export interface ShortSinglePrice {
   symbol: string;
-  value: any;
+  value: number;
 }
 
 export interface PricePackage {
@@ -128,7 +130,7 @@ export interface SignedPricePackage {
 
 export interface SerializedPriceData {
   symbols: string[];
-  values: any[];
+  values: number[];
   timestamp: number;
 }
 

@@ -1,27 +1,22 @@
-import { toBuffer, bufferToHex, keccak256 } from "ethereumjs-util";
+import { personalSign, recoverPersonalSignature } from "@metamask/eth-sig-util";
+import { bufferToHex, keccak256, toBuffer } from "ethereumjs-util";
 import { ethers } from "ethers";
 import sortDeepObjectArrays from "sort-deep-object-arrays";
-import { personalSign, recoverPersonalSignature } from "@metamask/eth-sig-util";
 import {
   PricePackage,
+  SerializedPriceData,
   ShortSinglePrice,
   SignedPricePackage,
-  SerializedPriceData,
 } from "../types";
-import _ from "lodash";
-import { ISafeNumber } from "../numbers/ISafeNumber";
-import { JsNativeSafeNumber } from "../numbers/JsNativeSafeNumber";
 
 /** IMPORTANT: This function as side effect convert Class instances to pure objects */
 const sortDeepObjects = <T>(arr: T[]): T[] => sortDeepObjectArrays(arr);
 
-const serializePriceValue = (value: number | ISafeNumber): number => {
+const serializePriceValue = (value: number): number => {
   if (typeof value === "number") {
     return Math.round(value * 10 ** 8);
-  } else if (value instanceof JsNativeSafeNumber) {
-    return Math.round(value.unsafeToNumber() * 10 ** 8);
   } else {
-    throw new Error(`Don't know how to serialize ${value} to price`);
+    throw new Error(`Don't know how to serialize ${value} to price value`);
   }
 };
 
@@ -79,7 +74,7 @@ export default class EvmPriceSigner {
     const sortedPrices = sortDeepObjects(cleanPricesData);
 
     const symbols: string[] = [];
-    const values: string[] = [];
+    const values: number[] = [];
     sortedPrices.forEach((p: ShortSinglePrice) => {
       symbols.push(p.symbol);
       values.push(p.value);
