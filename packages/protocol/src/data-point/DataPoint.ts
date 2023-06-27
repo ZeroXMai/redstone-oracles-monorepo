@@ -8,6 +8,7 @@ export interface IStandardDataPoint {
   dataFeedId: ConvertibleToBytes32;
   value: string; // base64-encoded bytes
   metadata?: Metadata;
+  decimals?: number;
 }
 export type DataPointPlainObj = IStandardDataPoint | INumericDataPoint;
 
