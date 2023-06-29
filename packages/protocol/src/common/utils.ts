@@ -86,10 +86,9 @@ export const convertBytesToNumber = (bytes: Uint8Array): number =>
 
 export const convertAndSerializeBytesToNumber = (
   bytes: Uint8Array,
-  decimals?: number
+  decimals: number = DEFAULT_NUM_VALUE_DECIMALS
 ): number => {
-  const decimalsToSerialize = decimals ?? DEFAULT_NUM_VALUE_DECIMALS;
-  return Number(formatUnits(BigNumber.from(bytes), decimalsToSerialize));
+  return Number(formatUnits(BigNumber.from(bytes), decimals));
 };
 
 export const hexlifyWithout0xPrefix = (value: BytesLike): string => {
