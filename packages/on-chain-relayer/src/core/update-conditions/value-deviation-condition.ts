@@ -1,11 +1,9 @@
 import { BigNumber } from "ethers";
 import { base64, formatUnits } from "ethers/lib/utils";
-import { IStandardDataPoint, utils } from "redstone-protocol";
+import { DataPointPlainObj, utils, consts } from "redstone-protocol";
 import { DataPackagesResponse, ValuesForDataFeeds } from "redstone-sdk";
 import { MathUtils } from "redstone-utils";
 import { config } from "../../config";
-
-const DEFAULT_DECIMALS = 8;
 
 export const valueDeviationCondition = (
   dataPackages: DataPackagesResponse,
@@ -22,12 +20,12 @@ export const valueDeviationCondition = (
 
     for (const { dataPackage } of dataPackages[dataFeedId]) {
       for (const dataPoint of dataPackage.dataPoints) {
-        const dataPointObj = dataPoint.toObj() as IStandardDataPoint;
+        const dataPointObj = dataPoint.toObj() as DataPointPlainObj;
 
         const valueFromContractAsDecimal = Number(
           formatUnits(
             valueFromContract.toString(),
-            dataPointObj.metadata?.decimals ?? DEFAULT_DECIMALS
+            dataPointObj.metadata?.decimals ?? consts.DEFAULT_NUM_VALUE_DECIMALS
           )
         );
 
@@ -38,12 +36,8 @@ export const valueDeviationCondition = (
           dataPointObj
         );
 
-        const decimals = dataPointObj.metadata?.decimals;
         const dataPointObjValueAsNumber =
-          utils.convertAndSerializeBytesToNumber(
-            base64.decode(dataPointObj.value),
-            decimals
-          );
+          convertDataPointValueToNumber(dataPointObj);
 
         const currentDeviation = calculateDeviation(
           dataPointObjValueAsNumber,
@@ -93,14 +87,10 @@ class ValueDeviationLogTrace {
     timestamp: number,
     valueFromContract: number,
     packagesCount: number,
-    dataPoint: IStandardDataPoint
+    dataPoint: DataPointPlainObj
   ) {
     const dataFeedId = dataPoint.dataFeedId;
-    const decimals = dataPoint.metadata?.decimals;
-    const dataPointObjValueAsNumber = utils.convertAndSerializeBytesToNumber(
-      base64.decode(dataPoint.value),
-      decimals
-    );
+    const dataPointObjValueAsNumber = convertDataPointValueToNumber(dataPoint);
 
     if (!this.perDataFeedId[dataFeedId]) {
       this.perDataFeedId[dataFeedId] = {
@@ -129,3 +119,22 @@ class ValueDeviationLogTrace {
     });
   }
 }
+
+const convertDataPointValueToNumber = (
+  dataPointObj: DataPointPlainObj
+): number => {
+  let dataPointValue: number;
+  if (typeof dataPointObj.value === "number") {
+    dataPointValue = dataPointObj.value;
+  } else if (typeof dataPointObj.value === "string") {
+    const decimals =
+      dataPointObj.metadata?.decimals ?? consts.DEFAULT_NUM_VALUE_DECIMALS;
+    dataPointValue = utils.convertAndSerializeBytesToNumber(
+      base64.decode(dataPointObj.value),
+      decimals
+    );
+  } else {
+    throw new Error("Invalid data point value type received");
+  }
+  return dataPointValue;
+};
