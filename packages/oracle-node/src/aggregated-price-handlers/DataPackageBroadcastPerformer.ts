@@ -1,4 +1,9 @@
-import { DataPackage, DataPoint, SignedDataPackage } from "redstone-protocol";
+import {
+  DataPackage,
+  DataPoint,
+  SignedDataPackage,
+  consts,
+} from "redstone-protocol";
 import { AggregatedPriceHandler } from "./AggregatedPriceHandler";
 import { PriceDataAfterAggregation } from "../types";
 import PricesService from "./../fetchers/PricesService";
@@ -15,7 +20,6 @@ import { ManifestDataProvider } from "./ManifestDataProvider";
 import { IterationContext } from "../schedulers/IScheduler";
 import ManifestHelper from "../manifest/ManifestHelper";
 import { convertNumberToBytes } from "redstone-protocol/src/common/utils";
-import { DEFAULT_NUM_VALUE_DECIMALS } from "redstone-protocol/src/common/redstone-constants";
 const logger = require("./../utils/logger")("runner") as Consola;
 
 const DEFAULT_HTTP_BROADCASTER_URLS = [
@@ -139,9 +143,13 @@ export class DataPackageBroadcastPerformer
       ManifestHelper.getDataFeedDecimals(
         this.manifestDataProvider.latestManifest!,
         price.symbol
-      ) ?? DEFAULT_NUM_VALUE_DECIMALS;
+      ) ?? consts.DEFAULT_NUM_VALUE_DECIMALS;
 
-    const value = convertNumberToBytes(price.value.toString(), decimals, 32);
+    const value = convertNumberToBytes(
+      price.value.toString(),
+      decimals,
+      consts.DEFAULT_NUM_VALUE_BS
+    );
 
     return new DataPoint(price.symbol, value);
   }

@@ -1,9 +1,9 @@
 import { BigNumber } from "ethers";
-import { INumericDataPoint } from "redstone-protocol";
+import { base64, formatUnits } from "ethers/lib/utils";
+import { IStandardDataPoint, utils } from "redstone-protocol";
 import { DataPackagesResponse, ValuesForDataFeeds } from "redstone-sdk";
-import { config } from "../../config";
-import { formatUnits } from "ethers/lib/utils";
 import { MathUtils } from "redstone-utils";
+import { config } from "../../config";
 
 const DEFAULT_DECIMALS = 8;
 
@@ -22,12 +22,12 @@ export const valueDeviationCondition = (
 
     for (const { dataPackage } of dataPackages[dataFeedId]) {
       for (const dataPoint of dataPackage.dataPoints) {
-        const dataPointObj = dataPoint.toObj() as INumericDataPoint;
+        const dataPointObj = dataPoint.toObj() as IStandardDataPoint;
 
         const valueFromContractAsDecimal = Number(
           formatUnits(
             valueFromContract.toString(),
-            dataPointObj.decimals ?? DEFAULT_DECIMALS
+            dataPointObj.metadata?.decimals ?? DEFAULT_DECIMALS
           )
         );
 
@@ -38,8 +38,15 @@ export const valueDeviationCondition = (
           dataPointObj
         );
 
+        const decimals = dataPointObj.metadata?.decimals;
+        const dataPointObjValueAsNumber =
+          utils.convertAndSerializeBytesToNumber(
+            base64.decode(dataPointObj.value),
+            decimals
+          );
+
         const currentDeviation = calculateDeviation(
-          dataPointObj.value,
+          dataPointObjValueAsNumber,
           valueFromContractAsDecimal
         );
         maxDeviation = Math.max(currentDeviation, maxDeviation);
@@ -86,18 +93,26 @@ class ValueDeviationLogTrace {
     timestamp: number,
     valueFromContract: number,
     packagesCount: number,
-    dataPoint: INumericDataPoint
+    dataPoint: IStandardDataPoint
   ) {
     const dataFeedId = dataPoint.dataFeedId;
+    const decimals = dataPoint.metadata?.decimals;
+    const dataPointObjValueAsNumber = utils.convertAndSerializeBytesToNumber(
+      base64.decode(dataPoint.value),
+      decimals
+    );
+
     if (!this.perDataFeedId[dataFeedId]) {
       this.perDataFeedId[dataFeedId] = {
         valueFromContract: valueFromContract,
-        valuesFromNode: [dataPoint.value],
+        valuesFromNode: [dataPointObjValueAsNumber],
         packagesCount,
         timestamp,
       };
     } else {
-      this.perDataFeedId[dataFeedId].valuesFromNode.push(dataPoint.value);
+      this.perDataFeedId[dataFeedId].valuesFromNode.push(
+        dataPointObjValueAsNumber
+      );
     }
   }
 
