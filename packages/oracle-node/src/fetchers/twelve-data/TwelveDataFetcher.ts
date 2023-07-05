@@ -46,7 +46,13 @@ export class TwelveDataFetcher extends BaseFetcher {
     });
   }
   override validateResponse(response: any): boolean {
-    return isDefined(response) && isDefined(response.data) && !(isDefined(response.data.code) && isDefined(response.data.message) && isDefined(response.data.status));
+    return isDefined(response) && isDefined(response.data) && response.data.status !== "error";
+  }
+
+  override serializeResponse(response: any): string {
+    // response is a circular object of the size of ~3MB.
+    // we want to get only the crucial part
+    return JSON.stringify(response.data);
   }
 
   extractPrices(
