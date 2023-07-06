@@ -1,8 +1,7 @@
 import { ethers } from "ethers";
 import PriceSignerService from "../../src/signers/PriceSignerService";
 import { PriceDataBeforeSigning } from "../../src/types";
-import { createSafeNumber } from "../../src/numbers/SafeNumberFactory";
-import { ISafeNumber } from "../../src/numbers/ISafeNumber";
+import { SafeNumber } from "redstone-utils";
 
 const testPrivKey =
   "0xc094df8d4a95134e721b2e418f53658c3927ee21b62b9b63c4331a902199e1e8";
@@ -50,7 +49,7 @@ describe("PriceSignerService", () => {
           source: {},
           timestamp: Date.now(),
           version: "v1",
-          value: createSafeNumber(102.123) as unknown as number,
+          value: SafeNumber.createSafeNumber(102.123) as unknown as number,
         },
       ];
 

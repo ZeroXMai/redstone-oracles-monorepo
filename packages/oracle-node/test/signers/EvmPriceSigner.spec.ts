@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import EvmPriceSigner from "../../src/signers/EvmPriceSigner";
 import { PricePackage, SignedPricePackage } from "../../src/types";
-import { createSafeNumber } from "../../src/numbers/SafeNumberFactory";
+import { SafeNumber } from "redstone-utils";
 
 const evmSigner = new EvmPriceSigner();
 const ethereumPrivateKey = ethers.Wallet.createRandom().privateKey;
@@ -166,11 +166,11 @@ describe("evmSignPricesAndVerify", () => {
       prices: [
         {
           symbol: "FIRST",
-          value: createSafeNumber("1.1") as unknown as number,
+          value: SafeNumber.createSafeNumber("1.1") as unknown as number,
         },
         {
           symbol: "SECOND",
-          value: createSafeNumber("100023") as unknown as number,
+          value: SafeNumber.createSafeNumber("100023") as unknown as number,
         },
       ],
       timestamp: Date.now(),
