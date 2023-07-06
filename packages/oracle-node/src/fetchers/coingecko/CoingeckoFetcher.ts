@@ -33,6 +33,7 @@ export class CoingeckoFetcher extends BaseFetcher {
 
     let mergedPrices: SimplePrices = {};
     for (const idsChunk of idsChunks) {
+      this.logger.log(`coingecko: to fetch items (${idsChunk.length}): ${idsChunk.join(",")}`);
       const response = await axios.get<SimplePrices>(coingeckoApiUrl, {
         params: {
           ids: idsChunk.join(","),
@@ -40,6 +41,7 @@ export class CoingeckoFetcher extends BaseFetcher {
           ...(coingeckoApiKey && { x_cg_pro_api_key: coingeckoApiKey }),
         },
       });
+      this.logger.log(`coingecko: fetched items (${Object.keys(response.data).length}): ${JSON.stringify(response.data)}`);
       mergedPrices = { ...mergedPrices, ...response.data };
     }
 
