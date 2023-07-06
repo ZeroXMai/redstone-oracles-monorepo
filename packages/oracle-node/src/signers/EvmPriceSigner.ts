@@ -8,6 +8,8 @@ import {
   ShortSinglePrice,
   SignedPricePackage,
 } from "../types";
+import _ from "lodash";
+import { SafeNumber } from "redstone-utils";
 
 /** IMPORTANT: This function as side effect convert Class instances to pure objects */
 const sortDeepObjects = <T>(arr: T[]): T[] => sortDeepObjectArrays(arr);

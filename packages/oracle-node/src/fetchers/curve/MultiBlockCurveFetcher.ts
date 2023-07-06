@@ -1,9 +1,12 @@
+import { MathUtils } from "redstone-utils";
 import { terminateWithManifestConfigError } from "../../Terminator";
-import { getMedianOfDecimals } from "../../utils/numbers";
 import { DexOnChainFetcher } from "../dex-on-chain/DexOnChainFetcher";
 import { CurveFetcher, CurveFetcherResponse } from "./CurveFetcher";
+import Decimal from "decimal.js";
 
 export class MultiBlockCurveFetcher extends DexOnChainFetcher<CurveFetcherResponse> {
+  protected retryForInvalidResponse: boolean = true;
+
   constructor(name: string, private readonly curveFetcher: CurveFetcher) {
     super(name);
   }
@@ -34,7 +37,7 @@ export class MultiBlockCurveFetcher extends DexOnChainFetcher<CurveFetcherRespon
     const ratios = responsesPerBlock.map((response) => response.ratio);
 
     return {
-      ratio: getMedianOfDecimals(ratios),
+      ratio: new Decimal(MathUtils.getMedian(ratios)),
       assetId: assetId,
     };
   }

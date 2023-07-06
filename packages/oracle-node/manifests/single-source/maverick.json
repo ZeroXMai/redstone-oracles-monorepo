@@ -11,6 +11,7 @@
   },
   "tokens": {
     "SWETH": {},
-    "ETH": { "source": ["coingecko"] }
+    "ETH": { "source": ["coingecko"] },
+    "LUSD": {}
   }
 }

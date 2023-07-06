@@ -1,5 +1,4 @@
-import { NumberLike } from "redstone-protocol/src/common/utils";
-import { ISafeNumber } from "./numbers/ISafeNumber";
+import { SafeNumber } from "redstone-utils";
 
 export interface Manifest {
   txId?: string; // Note, you need to set this field manually (after downloading the manifest data)
@@ -31,6 +30,7 @@ export interface TokenConfig {
   skipSigning?: boolean;
   priceAggregator?: string;
   decimals?: number;
+  fixedValue?: number;
 }
 
 export interface DeviationCheckConfig {
@@ -57,7 +57,7 @@ export interface Fetcher {
 }
 
 export type SanitizedPriceDataBeforeAggregation =
-  PriceDataBeforeAggregation<ISafeNumber>;
+  PriceDataBeforeAggregation<SafeNumber.ISafeNumber>;
 
 export interface Aggregator {
   getAggregatedValue: (
@@ -96,7 +96,7 @@ export interface PriceSource<T> {
   [sourceName: string]: T;
 }
 
-export interface PriceDataAfterAggregation<V = ISafeNumber>
+export interface PriceDataAfterAggregation<V = SafeNumber.ISafeNumber>
   extends SanitizedPriceDataBeforeAggregation {
   value: V;
 }
@@ -153,14 +153,14 @@ export interface NodeConfig {
   overrideDirectCacheServiceUrls?: string[];
   overridePriceCacheServiceUrls?: string[];
   coinbaseIndexerMongoDbUrl?: string;
-  ethMainRpcUrl?: string;
   levelDbLocation: string;
   etherscanApiUrl?: string;
   etherscanApiKey?: string;
   ttlForPricesInLocalDBInMilliseconds: number;
-  avalancheRpcUrl: string;
-  fallbackAvalancheRpcUrl?: string;
-  arbitrumRpcUrl: string;
+  ethMainRpcUrls: string[];
+  avalancheRpcUrls: string[];
+  arbitrumRpcUrls: string[];
+  optimismRpcUrls: string[];
   enableStreamrBroadcasting: boolean;
   mockPricesUrlOrPath: string;
   twelveDataApiKey?: string;

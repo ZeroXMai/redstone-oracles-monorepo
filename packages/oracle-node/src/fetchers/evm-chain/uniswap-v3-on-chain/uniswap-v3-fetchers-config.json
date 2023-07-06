@@ -161,11 +161,23 @@
     "USDC": {
       "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
       "poolAddress": "0x8ad599c3A0ff1De082011EFDDc58f1908eb6e6D8",
+      "token0Symbol": "AAVE",
+      "token1Symbol": "WETH",
+      "token0Address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+      "token1Address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "token0Decimals": 6,
+      "token1Decimals": 18,
+      "fee": 3000,
+      "pairedToken": "ETH"
+    },
+    "AAVE": {
+      "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+      "poolAddress": "0x5aB53EE1d50eeF2C1DD3d5402789cd27bB52c1bB",
       "token0Symbol": "USDC",
       "token1Symbol": "WETH",
       "token0Address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "token1Address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      "token0Decimals": 6,
+      "token0Decimals": 18,
       "token1Decimals": 18,
       "fee": 3000,
       "pairedToken": "ETH"
@@ -220,6 +232,18 @@
       "fee": 500,
       "pairedToken": "ETH",
       "slippage": [10000, 100000]
+    },
+    "FRXETH": {
+      "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+      "poolAddress": "0x8a15b2dc9c4f295dcebb0e7887dd25980088fdcb",
+      "token0Symbol": "USDC",
+      "token1Symbol": "FRXETH",
+      "token0Address": "0x5e8422345238f34275888049021821e8e08caa1f",
+      "token1Address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "token0Decimals": 18,
+      "token1Decimals": 18,
+      "fee": 500,
+      "pairedToken": "ETH"
     }
   },
   "uniswap-v3-on-chain-weth-100": {
@@ -639,6 +663,17 @@
       "token0Address": "0x1abaea1f7c830bd89acc67ec4af516284b1bc33c",
       "token1Address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
       "token0Decimals": 6,
+      "token1Decimals": 6,
+      "fee": 500
+    },
+    "LUSD": {
+      "quoterAddress": "0x61fFE014bA17989E743c5F6cB21bF9697530B21e",
+      "poolAddress": "0x4e0924d3a751bE199C426d52fb1f2337fa96f736",
+      "token0Symbol": "LUSD",
+      "token1Symbol": "USDC",
+      "token0Address": "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
+      "token1Address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "token0Decimals": 18,
       "token1Decimals": 6,
       "fee": 500
     }

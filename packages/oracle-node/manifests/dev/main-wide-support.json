@@ -683,30 +683,31 @@
     },
     "AAVE": {
       "source": [
-        "band",
         "binance",
         "binanceus",
         "binanceusdm",
+        "bitget",
+        "bitmart",
         "bitfinex2",
         "bittrex",
-        "cex",
-        "chainlink",
+        "bybit",
         "coinbaseprime",
         "coinbasepro",
         "coingecko",
         "currencycom",
-        "dia",
         "hitbtc",
         "huobipro",
         "kaiko",
         "kraken",
         "kucoin",
         "lbank",
+        "mexc",
         "oceanex",
         "okx",
+        "phemex",
         "poloniex",
-        "sushiswap",
-        "uniswap"
+        "uniswap-v3-on-chain-weth-3000",
+        "xt"
       ]
     },
     "AR": {
@@ -774,7 +775,6 @@
     },
     "BIT": {
       "source": [
-        "bybit",
         "coinbaseprime",
         "coinbasepro",
         "coingecko",
@@ -824,10 +824,13 @@
     },
     "STETH": {
       "source": [
-        "kaiko",
-        "coinmarketcap",
+        "bitget",
+        "bybit",
         "curve-eth",
         "curve-weth",
+        "huobipro",
+        "kaiko",
+        "mexc",
         "uniswap-v2-on-chain-weth"
       ]
     },
@@ -835,7 +838,7 @@
       "source": ["bitget", "bkex", "coingecko", "coinmarketcap", "camelot-weth"]
     },
     "CMP": {
-      "source": ["coingecko", "xt"]
+      "source": ["bybit", "coingecko", "xt"]
     },
     "VST/ETH": {
       "source": ["non-usd-based"]
@@ -870,6 +873,29 @@
         "huobipro",
         "kucoin",
         "gate"
+      ]
+    },
+    "FRXETH": {
+      "source": ["curve-eth", "uniswap-v3-on-chain-weth-500"]
+    },
+    "ALETH": {
+      "source": ["curve-eth", "curve-frxeth"]
+    },
+    "crvFRAX": {
+      "source": ["ethereum-evm-fetcher"]
+    },
+    "3Crv": {
+      "source": ["ethereum-evm-fetcher"]
+    },
+    "ALUSD": {
+      "source": ["curve-crvfrax", "curve-3crv"]
+    },
+    "LUSD": {
+      "source": [
+        "curve-3crv",
+        "maverick",
+        "uniswap-v3-on-chain-usdc-500",
+        "uniswap-v3-optimism-on-chain-usdc-500"
       ]
     },
     "ARDRIVE": {
@@ -930,6 +956,9 @@
       "source": ["twelve-data"]
     },
     "RSX": {
+      "source": ["twelve-data"]
+    },
+    "C3M": {
       "source": ["twelve-data"]
     },
     "ZC=F": {

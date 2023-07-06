@@ -683,30 +683,31 @@
     },
     "AAVE": {
       "source": [
-        "band",
         "binance",
         "binanceus",
         "binanceusdm",
+        "bitget",
+        "bitmart",
         "bitfinex2",
         "bittrex",
-        "cex",
-        "chainlink",
+        "bybit",
         "coinbaseprime",
         "coinbasepro",
         "coingecko",
         "currencycom",
-        "dia",
         "hitbtc",
         "huobipro",
         "kaiko",
         "kraken",
         "kucoin",
         "lbank",
+        "mexc",
         "oceanex",
         "okx",
+        "phemex",
         "poloniex",
-        "sushiswap",
-        "uniswap"
+        "uniswap-v3-on-chain-weth-3000",
+        "xt"
       ]
     },
     "AR": {
@@ -774,14 +775,7 @@
       ]
     },
     "BIT": {
-      "source": [
-        "bybit",
-        "coinbaseprime",
-        "coinbasepro",
-        "coingecko",
-        "gate",
-        "mexc"
-      ]
+      "source": ["coinbaseprime", "coinbasepro", "coingecko", "gate", "mexc"]
     },
     "KAVA": {
       "source": [
@@ -823,13 +817,22 @@
       "source": ["camelot-usdc"]
     },
     "STETH": {
-      "source": ["kaiko", "curve-eth", "curve-weth", "uniswap-v2-on-chain-weth"]
+      "source": [
+        "bitget",
+        "bybit",
+        "curve-eth",
+        "curve-weth",
+        "huobipro",
+        "kaiko",
+        "mexc",
+        "uniswap-v2-on-chain-weth"
+      ]
     },
     "PLS": {
       "source": ["bitget", "bkex", "coingecko", "camelot-weth"]
     },
     "CMP": {
-      "source": ["coingecko", "xt"]
+      "source": ["bybit", "coingecko", "xt"]
     },
     "VST/ETH": {
       "source": ["non-usd-based"]
@@ -881,6 +884,27 @@
         "huobipro",
         "kucoin",
         "gate"
+      ]
+    },
+    "USDf": {
+      "source": ["fixed-value"],
+      "fixedValue": 1
+    },
+    "FRXETH": {
+      "source": ["curve-eth", "uniswap-v3-on-chain-weth-500"]
+    },
+    "ALETH": {
+      "source": ["curve-eth", "curve-frxeth"]
+    },
+    "ALUSD": {
+      "source": ["curve-crvfrax", "curve-3crv"]
+    },
+    "LUSD": {
+      "source": [
+        "curve-3crv",
+        "maverick",
+        "uniswap-v3-on-chain-usdc-500",
+        "uniswap-v3-optimism-on-chain-usdc-500"
       ]
     },
     "AUD": {
@@ -956,6 +980,9 @@
       "source": ["twelve-data"]
     },
     "RSX": {
+      "source": ["twelve-data"]
+    },
+    "C3M": {
       "source": ["twelve-data"]
     },
     "ZC=F": {
@@ -1466,6 +1493,12 @@
     "crvUSDBTCETH": {
       "source": ["avalanche-evm-fetcher"]
     },
+    "crvFRAX": {
+      "source": ["ethereum-evm-fetcher"]
+    },
+    "3Crv": {
+      "source": ["ethereum-evm-fetcher"]
+    },
     "ABNB": {
       "source": ["currencycom"]
     },
@@ -1559,46 +1592,10 @@
     "CHF": {
       "source": ["ecb", "twelve-data"]
     },
-    "BEAR": {
-      "source": ["poloniex"]
-    },
-    "ETHBULL": {
-      "source": ["poloniex"]
-    },
-    "ADABULL": {
-      "source": ["poloniex"]
-    },
-    "BCHBULL": {
-      "source": ["poloniex"]
-    },
-    "LINKBULL": {
-      "source": ["poloniex"]
-    },
     "ROOK": {
       "source": ["poloniex"]
     },
-    "ZAP": {
-      "source": ["poloniex"]
-    },
     "CUSDT": {
-      "source": ["poloniex"]
-    },
-    "BCHBEAR": {
-      "source": ["poloniex"]
-    },
-    "BSVBEAR": {
-      "source": ["poloniex"]
-    },
-    "IBVOL": {
-      "source": ["poloniex"]
-    },
-    "TRXBULL": {
-      "source": ["poloniex"]
-    },
-    "XLMBEAR": {
-      "source": ["poloniex"]
-    },
-    "XLMBULL": {
       "source": ["poloniex"]
     },
     "BAT": {},
@@ -2008,7 +2005,6 @@
     "AKN": {},
     "AKA": {},
     "ALA": {},
-    "ALUSD": {},
     "ALEPH": {},
     "ALEX": {},
     "ALLBI": {},
@@ -2334,7 +2330,6 @@
     "XRD": {},
     "WEMIX": {},
     "KAS": {},
-    "LUSD": {},
     "GNS": {},
     "ASTRAFER": {},
     "EDGT": {},

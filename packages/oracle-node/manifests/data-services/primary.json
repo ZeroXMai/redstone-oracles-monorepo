@@ -51,6 +51,23 @@
       ],
       "skipSigning": true
     },
+    "DAI": {
+      "source": [
+        "binanceus",
+        "coinbaseprime",
+        "coinbasepro",
+        "coingecko",
+        "curve-usdc",
+        "curve-usdt",
+        "huobipro",
+        "kraken",
+        "okx",
+        "sushiswap-on-chain-weth",
+        "uniswap-v2-on-chain-weth",
+        "xt"
+      ],
+      "skipSigning": true
+    },
     "FXS": {
       "source": [
         "binance",
@@ -103,13 +120,65 @@
         "okx",
         "poloniex",
         "probit"
-      ]
+      ],
+      "skipSigning": true
     },
     "SWETH": {
       "source": [
         "balancer-multi-sweth",
         "maverick",
         "uniswap-v3-on-chain-weth-500"
+      ]
+    },
+    "FRXETH": {
+      "source": ["curve-eth", "uniswap-v3-on-chain-weth-500"]
+    },
+    "ALETH": {
+      "source": ["curve-eth", "curve-frxeth"]
+    },
+    "crvFRAX": {
+      "source": ["ethereum-evm-fetcher"]
+    },
+    "3Crv": {
+      "source": ["ethereum-evm-fetcher"]
+    },
+    "ALUSD": {
+      "source": ["curve-crvfrax", "curve-3crv"]
+    },
+    "LUSD": {
+      "source": [
+        "curve-3crv",
+        "maverick",
+        "uniswap-v3-on-chain-usdc-500",
+        "uniswap-v3-optimism-on-chain-usdc-500"
+      ]
+    },
+    "AAVE": {
+      "source": [
+        "binance",
+        "binanceus",
+        "binanceusdm",
+        "bitget",
+        "bitmart",
+        "bitfinex2",
+        "bittrex",
+        "bybit",
+        "coinbaseprime",
+        "coinbasepro",
+        "coingecko",
+        "currencycom",
+        "hitbtc",
+        "huobipro",
+        "kraken",
+        "kucoin",
+        "lbank",
+        "mexc",
+        "oceanex",
+        "okx",
+        "phemex",
+        "poloniex",
+        "uniswap-v3-on-chain-weth-3000",
+        "xt"
       ]
     }
   }

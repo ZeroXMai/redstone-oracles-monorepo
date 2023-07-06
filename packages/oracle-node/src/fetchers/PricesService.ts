@@ -1,10 +1,9 @@
 import axios from "axios";
 import { Consola } from "consola";
 import { v4 as uuidv4 } from "uuid";
+import { SafeNumber } from "redstone-utils";
 import { getPrices, PriceValueInLocalDB } from "../db/local-db";
 import ManifestHelper, { TokensBySource } from "../manifest/ManifestHelper";
-import { ISafeNumber } from "../numbers/ISafeNumber";
-import { createSafeNumber } from "../numbers/SafeNumberFactory";
 import { IterationContext } from "../schedulers/IScheduler";
 import { terminateWithManifestConfigError } from "../Terminator";
 import {
@@ -17,10 +16,6 @@ import {
   SanitizedPriceDataBeforeAggregation,
 } from "../types";
 import { stringifyError } from "../utils/error-stringifier";
-import {
-  calculateAverageValue,
-  calculateDeviationPercent,
-} from "../utils/numbers";
 import { trackEnd, trackStart } from "../utils/performance-tracker";
 import { promiseTimeout } from "../utils/promise-timeout";
 import fetchers from "./index";
@@ -36,7 +31,7 @@ export type PricesBeforeAggregation = {
 };
 
 export interface PriceValidationArgs {
-  value: ISafeNumber;
+  value: SafeNumber.ISafeNumber;
   timestamp: number;
   deviationConfig: DeviationCheckConfig;
   recentPrices: PriceValueInLocalDB[];
@@ -102,12 +97,6 @@ export default class PricesService {
     source: string,
     tokens: string[]
   ): Promise<PriceDataFetched[]> {
-    if (tokens.length === 0) {
-      terminateWithManifestConfigError(
-        `${source} fetcher received an empty array of symbols`
-      );
-    }
-
     if (!fetchers[source]) {
       terminateWithManifestConfigError(
         `Fetcher for source ${source} doesn't exist`
@@ -123,11 +112,6 @@ export default class PricesService {
       source,
       this.manifest
     );
-    if (sourceTimeout === null) {
-      terminateWithManifestConfigError(
-        `No timeout configured for ${source}. Did you forget to add "sourceTimeout" field in manifest file?`
-      );
-    }
     logger.info(`Call to ${source} will timeout after ${sourceTimeout}ms`);
 
     const trackingId = trackStart(`fetching-${source}`);
@@ -243,11 +227,11 @@ export default class PricesService {
     recentPricesInLocalDBForSymbol: PriceValueInLocalDB[],
     deviationCheckConfig: DeviationCheckConfig
   ): SanitizedPriceDataBeforeAggregation {
-    const newSources: { [symbol: string]: ISafeNumber } = {};
+    const newSources: { [symbol: string]: SafeNumber.ISafeNumber } = {};
 
     for (const [sourceName, valueFromSource] of Object.entries(price.source)) {
       try {
-        const valueFromSourceNum = createSafeNumber(valueFromSource);
+        const valueFromSourceNum = SafeNumber.createSafeNumber(valueFromSource);
 
         valueFromSourceNum.assertNonNegative();
 
@@ -269,7 +253,7 @@ export default class PricesService {
     return { ...price, source: newSources };
   }
 
-  assertInHardLimits(value: ISafeNumber, priceLimits?: PriceLimits) {
+  assertInHardLimits(value: SafeNumber.ISafeNumber, priceLimits?: PriceLimits) {
     if (
       priceLimits &&
       (value.gt(priceLimits.upper) || value.lt(priceLimits.lower))
@@ -293,7 +277,9 @@ export default class PricesService {
   }
 
   // Calculates max deviation from average of recent values
-  getDeviationWithRecentValuesAverage(args: PriceValidationArgs): ISafeNumber {
+  getDeviationWithRecentValuesAverage(
+    args: PriceValidationArgs
+  ): SafeNumber.ISafeNumber {
     const { value, timestamp, deviationConfig, recentPrices } = args;
     const { deviationWithRecentValues } = deviationConfig;
 
@@ -303,15 +289,17 @@ export default class PricesService {
           timestamp - recentPrice.timestamp <=
           deviationWithRecentValues.maxDelayMilliseconds
       )
-      .map((recentPrice) => createSafeNumber(recentPrice.value));
+      .map((recentPrice) => SafeNumber.createSafeNumber(recentPrice.value));
 
     if (priceValuesToCompareWith.length === 0) {
-      return createSafeNumber(0);
+      return SafeNumber.SafeZero;
     } else {
-      const recentPricesAvg = calculateAverageValue(priceValuesToCompareWith);
-      return calculateDeviationPercent({
-        measuredValue: value,
-        trueValue: recentPricesAvg,
+      const recentPricesAvg = SafeNumber.calculateAverageValue(
+        priceValuesToCompareWith
+      );
+      return SafeNumber.calculateDeviationPercent({
+        prevValue: value,
+        currValue: recentPricesAvg,
       });
     }
   }
@@ -347,12 +335,6 @@ export default class PricesService {
         priceSymbol,
         this.manifest
       );
-    if (!deviationCheckConfig) {
-      terminateWithManifestConfigError(
-        `Could not determine deviationCheckConfig for ${priceSymbol}. ` +
-          `Did you forget to add deviationCheck parameter in the manifest file?`
-      );
-    }
     return deviationCheckConfig;
   }
 

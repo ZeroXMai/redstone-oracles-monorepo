@@ -12,7 +12,9 @@
   "tokens": {
     "AVAX": {},
     "GMX": {},
-    "BIT": {},
-    "CRV": {}
+    "CRV": {},
+    "AAVE": {},
+    "CMP": {},
+    "STETH": {}
   }
 }
