@@ -5,7 +5,7 @@ import {
   MockScheduler,
   getPricesForDataFeedId,
   getTokensFromManifest,
-  runNodeMultipleTimes,
+  runTestNode,
 } from "./helpers";
 import ManifestHelper from "../../src/manifest/ManifestHelper";
 import { CronScheduler } from "../../src/schedulers/CronScheduler";
@@ -39,6 +39,16 @@ function removeSkippedItemsFromManifest(manifest: Manifest) {
       filteredTokens[token].source = filteredTokens[token].source?.filter(
         (s) => !skippedSources.includes(s)
       );
+    }
+  }
+  manifest.tokens = filteredTokens;
+}
+
+function removeAlreadyFetchedTokensFromManifest(manifest: Manifest) {
+  let filteredTokens: TokensConfig = {};
+  for (const token in manifest.tokens) {
+    if (!getLastPrice(token)) {
+      filteredTokens[token] = manifest.tokens[token];
     }
   }
   manifest.tokens = filteredTokens;
@@ -95,7 +105,8 @@ describe("Main dry run test", () => {
     */
     removeSkippedItemsFromManifest(config.manifest);
     for (let i = 0; i < config.nodeIterations; ++i) {
-      await runNodeMultipleTimes(config.manifest, 1);
+      await runTestNode(config.manifest);
+      removeAlreadyFetchedTokensFromManifest(config.manifest);
     }
     const tokens = getTokensFromManifest(config.manifest);
     for (const token of tokens) {
