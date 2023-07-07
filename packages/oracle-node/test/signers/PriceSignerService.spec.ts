@@ -20,6 +20,7 @@ describe("PriceSignerService", () => {
           timestamp: 1630454400000,
           version: "v1",
           value: 102.123,
+          sourceMetadata: {},
         },
       ];
 
@@ -35,6 +36,7 @@ describe("PriceSignerService", () => {
           timestamp: 1630454400000,
           value: 102.123,
           version: "v1",
+          sourceMetadata: {},
         },
       ]);
     });
@@ -49,6 +51,7 @@ describe("PriceSignerService", () => {
           source: {},
           timestamp: Date.now(),
           version: "v1",
+          sourceMetadata: {},
           value: SafeNumber.createSafeNumber(102.123) as unknown as number,
         },
       ];
