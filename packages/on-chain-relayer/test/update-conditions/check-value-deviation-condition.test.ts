@@ -28,6 +28,7 @@ describe("check-value-deviation-condition", () => {
     expect(warningMessage).to.match(
       /Value has not deviated enough to be updated/
     );
+    expect(warningMessage).not.to.match(/Fallback deviation:/);
   });
 
   it("should return true if value diff bigger than expected", async () => {
@@ -43,5 +44,6 @@ describe("check-value-deviation-condition", () => {
     );
     expect(shouldUpdatePrices).to.be.true;
     expect(warningMessage).to.match(/Value has deviated enough to be/);
+    expect(warningMessage).not.to.match(/Fallback deviation:/);
   });
 });

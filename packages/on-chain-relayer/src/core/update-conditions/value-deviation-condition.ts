@@ -14,10 +14,11 @@ export const valueDeviationCondition = async (
     config
   );
 
-  let olderShouldUpdatePrices = false;
+  const isFallback = (config.fallbackOffsetInMinutes ?? 0) > 0;
+  let olderShouldUpdatePrices = true;
   let olderWarningMessage = "";
 
-  if (shouldUpdatePrices && (config.fallbackOffsetInMinutes ?? 0) > 0) {
+  if (shouldUpdatePrices && isFallback) {
     const olderDataPackages = await olderDataPackagesPromise;
 
     const {
@@ -35,6 +36,8 @@ export const valueDeviationCondition = async (
 
   return {
     shouldUpdatePrices: shouldUpdatePrices && olderShouldUpdatePrices,
-    warningMessage: `Fallback deviation: ${warningMessage}${olderWarningMessage}`,
+    warningMessage: `${
+      isFallback ? "Fallback deviation: " : ""
+    }${warningMessage}${olderWarningMessage}`,
   };
 };
