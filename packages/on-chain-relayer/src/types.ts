@@ -4,7 +4,7 @@ export interface Context {
   dataPackages: DataPackagesResponse;
   valuesFromContract: ValuesForDataFeeds;
   lastUpdateTimestamp: number;
-  olderDataPackages?: DataPackagesResponse;
+  olderDataPackagesPromise?: Promise<DataPackagesResponse>;
 }
 
 export interface ConditionCheckResponse {
@@ -66,8 +66,4 @@ export type OnChainRelayerEnv = {
 
 export type ConfigProvider = () => RelayerConfig;
 
-export type ConditionCheckNames =
-  | "time"
-  | "value-deviation"
-  | "fallback-deviation"
-  | "fallback-time";
+export type ConditionCheckNames = "time" | "value-deviation";

@@ -14,15 +14,11 @@ export const makeConfigProvider = (
   let updateConditions = [] as ConditionCheckNames[];
 
   if (deviationPercentage) {
-    updateConditions.push(
-      env.fallbackOffsetInMinutes > 0 ? "fallback-deviation" : "value-deviation"
-    );
+    updateConditions.push("value-deviation");
   }
 
   if (timeSinceLastUpdateInMilliseconds) {
-    updateConditions.push(
-      env.fallbackOffsetInMinutes > 0 ? "fallback-time" : "time"
-    );
+    updateConditions.push("time");
   }
 
   return Object.freeze({

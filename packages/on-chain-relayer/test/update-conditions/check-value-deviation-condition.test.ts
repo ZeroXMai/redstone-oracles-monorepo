@@ -1,14 +1,14 @@
 import { expect } from "chai";
 import { ValuesForDataFeeds } from "redstone-sdk";
 import { config } from "../../src/config";
-import { valueDeviationCondition } from "../../src/core/update-conditions/value-deviation-condition";
+import { checkValueDeviationCondition } from "../../src/core/update-conditions/check-value-deviation-condition";
 import {
   createNumberFromContract,
   getDataPackagesResponse,
   mockEnvVariables,
 } from "../helpers";
 
-describe("value-deviation-condition", () => {
+describe("check-value-deviation-condition", () => {
   before(() => {
     mockEnvVariables();
   });
@@ -19,7 +19,7 @@ describe("value-deviation-condition", () => {
       ETH: createNumberFromContract(1630.99),
       BTC: createNumberFromContract(23011.68),
     };
-    const { shouldUpdatePrices, warningMessage } = valueDeviationCondition(
+    const { shouldUpdatePrices, warningMessage } = checkValueDeviationCondition(
       dataPackages,
       smallerValueDiff,
       config()
@@ -36,7 +36,7 @@ describe("value-deviation-condition", () => {
       ETH: createNumberFromContract(1230.99),
       BTC: createNumberFromContract(13011.68),
     };
-    const { shouldUpdatePrices, warningMessage } = valueDeviationCondition(
+    const { shouldUpdatePrices, warningMessage } = checkValueDeviationCondition(
       dataPackages,
       biggerValueDiff,
       config()
