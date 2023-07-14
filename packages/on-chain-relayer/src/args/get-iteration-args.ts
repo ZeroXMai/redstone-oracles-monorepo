@@ -18,26 +18,32 @@ export const getIterationArgs = async (
   args?: UpdatePricesArgs;
   message?: string;
 }> => {
-  const { dataFeeds, updateConditions } = config();
+  const relayerConfig = config();
+  const { dataFeeds, updateConditions } = relayerConfig;
 
   const { lastUpdateTimestamp } = await getLastRoundParamsFromContract(
     adapterContract
   );
 
   // We fetch latest values from contract only if we want to check value deviation
+  const shouldCheckValueDeviation =
+    updateConditions.includes("value-deviation");
   let valuesFromContract: ValuesForDataFeeds = {};
-  if (updateConditions.includes("value-deviation")) {
+  if (shouldCheckValueDeviation) {
     valuesFromContract = await getValuesForDataFeeds(
       adapterContract,
       dataFeeds
     );
   }
-  const dataPackages = await fetchDataPackages(config(), valuesFromContract);
-  const olderDataPackagesPromise = fetchDataPackages(
-    config(),
-    valuesFromContract,
-    true
+  const dataPackages = await fetchDataPackages(
+    relayerConfig,
+    valuesFromContract
   );
+  const olderDataPackagesPromise =
+    shouldCheckValueDeviation &&
+    (relayerConfig.fallbackOffsetInMinutes ?? 0) > 0
+      ? fetchDataPackages(relayerConfig, valuesFromContract, true)
+      : undefined;
 
   const { shouldUpdatePrices, warningMessage } = await shouldUpdate(
     {
@@ -46,7 +52,7 @@ export const getIterationArgs = async (
       valuesFromContract,
       lastUpdateTimestamp,
     },
-    config()
+    relayerConfig
   );
 
   if (!shouldUpdatePrices) {

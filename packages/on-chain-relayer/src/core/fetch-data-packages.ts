@@ -41,9 +41,9 @@ const requestHistoricalDataPackages = (
     });
   }
 
-  throw (
+  return Promise.reject(
     `Historical packages fetcher for fallback deviation check is not properly configured: ` +
-    `offset=${fallbackOffsetInMinutes} min., gateway=${historicalPackagesGateway}`
+      `offset=${fallbackOffsetInMinutes} min., gateway=${historicalPackagesGateway}`
   );
 };
 
