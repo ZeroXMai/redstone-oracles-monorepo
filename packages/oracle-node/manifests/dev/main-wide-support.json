@@ -902,6 +902,12 @@
         "uniswap-v3-optimism-on-chain-usdc-500"
       ]
     },
+    "GHO": {
+      "source": [
+        "uniswap-v3-on-chain-usdc-3000",
+        "uniswap-v3-on-chain-usdt-3000"
+      ]
+    },
     "ARDRIVE": {
       "source": ["permaswap"]
     },
