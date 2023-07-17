@@ -37,7 +37,9 @@ const requestHistoricalDataPackages = (
   if (!!fallbackOffsetInMinutes && !!historicalPackagesGateway) {
     return requestDataPackages({
       ...requestParams,
-      historicalTimestamp: olderPackagesTimestamp(fallbackOffsetInMinutes),
+      historicalTimestamp: calculateOlderPackagesTimestamp(
+        fallbackOffsetInMinutes
+      ),
       urls: [historicalPackagesGateway],
     });
   }
@@ -48,7 +50,9 @@ const requestHistoricalDataPackages = (
   );
 };
 
-const olderPackagesTimestamp = (deviationCheckOffsetInMinutes: number) => {
+const calculateOlderPackagesTimestamp = (
+  deviationCheckOffsetInMinutes: number
+) => {
   if (deviationCheckOffsetInMinutes > 0) {
     // We round the timestamp to full minutes for being compatible with
     // oracle-nodes, which usually work with rounded 10s and 60s intervals
