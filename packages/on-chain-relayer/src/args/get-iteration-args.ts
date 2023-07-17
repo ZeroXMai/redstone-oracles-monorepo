@@ -45,21 +45,10 @@ export const getIterationArgs = async (
     uniqueSignersThreshold,
     valuesFromContract
   );
-  const olderDataPackagesPromise =
-    shouldCheckValueDeviation &&
-    (relayerConfig.fallbackOffsetInMinutes ?? 0) > 0
-      ? fetchDataPackages(
-          relayerConfig,
-          uniqueSignersThreshold,
-          valuesFromContract,
-          true
-        )
-      : undefined;
 
   const { shouldUpdatePrices, warningMessage } = await shouldUpdate(
     {
       dataPackages,
-      olderDataPackagesPromise,
       valuesFromContract,
       uniqueSignersThreshold,
       lastUpdateTimestamp,

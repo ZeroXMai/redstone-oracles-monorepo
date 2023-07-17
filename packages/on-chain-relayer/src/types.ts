@@ -5,7 +5,6 @@ export interface Context {
   valuesFromContract: ValuesForDataFeeds;
   lastUpdateTimestamp: number;
   uniqueSignersThreshold: number;
-  olderDataPackagesPromise?: Promise<DataPackagesResponse>;
 }
 
 export interface ConditionCheckResponse {

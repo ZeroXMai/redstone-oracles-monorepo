@@ -49,7 +49,7 @@ const checkConditionByName = async (
     case "value-deviation":
       return await valueDeviationCondition(
         context.dataPackages,
-        context.olderDataPackagesPromise!,
+        context.uniqueSignersThreshold,
         context.valuesFromContract,
         config
       );

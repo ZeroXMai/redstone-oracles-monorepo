@@ -1,12 +1,13 @@
 import { RelayerConfig } from "../../types";
 import { DataPackagesResponse, ValuesForDataFeeds } from "redstone-sdk";
 import { checkValueDeviationCondition } from "./check-value-deviation-condition";
+import { fetchDataPackages } from "../fetch-data-packages";
 
-export const valueDeviationCondition = async (
+export const performValueDeviationConditionChecks = async (
   latestDataPackages: DataPackagesResponse,
-  olderDataPackagesPromise: Promise<DataPackagesResponse>,
   valuesFromContract: ValuesForDataFeeds,
-  config: RelayerConfig
+  config: RelayerConfig,
+  olderDataPackagesFetchCallback: () => Promise<DataPackagesResponse>
 ) => {
   const { shouldUpdatePrices, warningMessage } = checkValueDeviationCondition(
     latestDataPackages,
@@ -19,7 +20,7 @@ export const valueDeviationCondition = async (
   let olderWarningMessage = "";
 
   if (shouldUpdatePrices && isFallback) {
-    const olderDataPackages = await olderDataPackagesPromise;
+    const olderDataPackages = await olderDataPackagesFetchCallback();
 
     const {
       shouldUpdatePrices: olderShouldUpdatePricesTmp,
@@ -40,4 +41,27 @@ export const valueDeviationCondition = async (
       isFallback ? "Fallback deviation: " : ""
     }${warningMessage}${olderWarningMessage}`,
   };
+};
+
+export const valueDeviationCondition = async (
+  latestDataPackages: DataPackagesResponse,
+  uniqueSignersThreshold: number,
+  valuesFromContract: ValuesForDataFeeds,
+  config: RelayerConfig
+) => {
+  const olderDataPackagesFetchCallback = async () => {
+    return await fetchDataPackages(
+      config,
+      uniqueSignersThreshold,
+      valuesFromContract,
+      true
+    );
+  };
+
+  return await performValueDeviationConditionChecks(
+    latestDataPackages,
+    valuesFromContract,
+    config,
+    olderDataPackagesFetchCallback
+  );
 };
