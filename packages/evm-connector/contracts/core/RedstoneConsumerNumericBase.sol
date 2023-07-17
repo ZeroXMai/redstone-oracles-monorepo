@@ -66,14 +66,15 @@ abstract contract RedstoneConsumerNumericBase is RedstoneConsumerBase {
    */
   function getOracleNumericValuesWithDuplicatesFromTxMsg(bytes32[] memory dataFeedIdsWithDuplicates) internal view returns (uint256[] memory) {
     // Building an array without duplicates
-    bytes32[] memory dataFeedIdsWithoutDuplicates = new bytes32[](dataFeedIdsWithDuplicates.length);
+    uint256 duplicatesLen = dataFeedIdsWithDuplicates.length; /// Cache feed length so it does not need to calculate it each time
+    bytes32[] memory dataFeedIdsWithoutDuplicates = new bytes32[](duplicatesLen);
     bool alreadyIncluded;
-    uint256 uniqueDataFeedIdsCount = 0;
+    uint256 uniqueDataFeedIdsCount; /// Remove 0 assignment
 
-    for (uint256 indexWithDup = 0; indexWithDup < dataFeedIdsWithDuplicates.length; indexWithDup++) {
+    for (uint256 indexWithDup; indexWithDup < duplicatesLen; ++indexWithDup) { /// Remove 0 assignment, use cached length, reverse ++ order
       // Checking if current element is already included in `dataFeedIdsWithoutDuplicates`
       alreadyIncluded = false;
-      for (uint256 indexWithoutDup = 0; indexWithoutDup < uniqueDataFeedIdsCount; indexWithoutDup++) {
+      for (uint256 indexWithoutDup; indexWithoutDup < uniqueDataFeedIdsCount; ++indexWithoutDup) { /// Remove 0 assignment, reverse ++ order
         if (dataFeedIdsWithoutDuplicates[indexWithoutDup] == dataFeedIdsWithDuplicates[indexWithDup]) {
           alreadyIncluded = true;
           break;
@@ -97,9 +98,10 @@ abstract contract RedstoneConsumerNumericBase is RedstoneConsumerBase {
     uint256[] memory valuesWithoutDuplicates = getOracleNumericValuesFromTxMsg(dataFeedIdsWithoutDuplicates);
 
     // Preparing result values array
-    uint256[] memory valuesWithDuplicates = new uint256[](dataFeedIdsWithDuplicates.length);
-    for (uint256 indexWithDup = 0; indexWithDup < dataFeedIdsWithDuplicates.length; indexWithDup++) {
-      for (uint256 indexWithoutDup = 0; indexWithoutDup < dataFeedIdsWithoutDuplicates.length; indexWithoutDup++) {
+    uint256[] memory valuesWithDuplicates = new uint256[](duplicatesLen);
+    for (uint256 indexWithDup = 0; indexWithDup < duplicatesLen; ++indexWithDup) { /// We keep 0 assignment here since used prior, use cached length, reverse ++ order
+      for (uint256 indexWithoutDup = 0; indexWithoutDup < duplicatesLen; ++indexWithoutDup) { /// We keep 0 assignment here since used prior, use cached length, reverse ++ order
+        /// You assign same length to duplicates vs non-duplicates array length so we can just reuse the already cached duplicatesLen value
         if (dataFeedIdsWithDuplicates[indexWithDup] == dataFeedIdsWithoutDuplicates[indexWithoutDup]) {
           valuesWithDuplicates[indexWithDup] = valuesWithoutDuplicates[indexWithoutDup];
           break;

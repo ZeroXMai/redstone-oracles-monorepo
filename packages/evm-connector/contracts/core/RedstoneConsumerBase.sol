@@ -4,11 +4,11 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import "./RedstoneConstants.sol";
-import "./RedstoneDefaultsLib.sol";
-import "./CalldataExtractor.sol";
-import "../libs/BitmapLib.sol";
-import "../libs/SignatureLib.sol";
+import "contracts/libraries/redstone/RedstoneConstants.sol";
+import "contracts/libraries/redstone/RedstoneDefaultsLib.sol";
+import "contracts/libraries/redstone/CalldataExtractor.sol";
+import "contracts/libraries/redstone/BitmapLib.sol";
+import "contracts/libraries/redstone/SignatureLib.sol";
 
 /**
  * @title The base contract with the main Redstone logic
@@ -93,14 +93,15 @@ abstract contract RedstoneConsumerBase is CalldataExtractor {
     returns (uint256[] memory)
   {
     // Initializing helpful variables and allocating memory
-    uint256[] memory uniqueSignerCountForDataFeedIds = new uint256[](dataFeedIds.length);
-    uint256[] memory signersBitmapForDataFeedIds = new uint256[](dataFeedIds.length);
-    uint256[][] memory valuesForDataFeeds = new uint256[][](dataFeedIds.length);
-    for (uint256 i = 0; i < dataFeedIds.length; i++) {
+    uint256 feedIdLength = dataFeedIds.length; /// Cache feed length so it does not need to calculate it each time
+    uint256[] memory uniqueSignerCountForDataFeedIds = new uint256[](feedIdLength);
+    uint256[] memory signersBitmapForDataFeedIds = new uint256[](feedIdLength);
+    uint256[][] memory valuesForDataFeeds = new uint256[][](feedIdLength);
+    for (uint256 i; i < feedIdLength; ) {
       // The line below is commented because newly allocated arrays are filled with zeros
       // But we left it for better readability
       // signersBitmapForDataFeedIds[i] = 0; // <- setting to an empty bitmap
-      valuesForDataFeeds[i] = new uint256[](getUniqueSignersThreshold());
+      valuesForDataFeeds[i++] = new uint256[](getUniqueSignersThreshold()); /// Add incrementation in with i call to halve i SSLOADs
     }
 
     // Extracting the number of data packages from calldata
@@ -115,7 +116,7 @@ abstract contract RedstoneConsumerBase is CalldataExtractor {
     }
 
     // Data packages extraction in a loop
-    for (uint256 dataPackageIndex = 0; dataPackageIndex < dataPackagesCount; dataPackageIndex++) {
+    for (uint256 dataPackageIndex; dataPackageIndex < dataPackagesCount; ++dataPackageIndex) {/// flip order on ++ increment to add prior as its less gas
       // Extract data package details and update calldata offset
       uint256 dataPackageByteSize = _extractDataPackage(
         dataFeedIds,
@@ -226,9 +227,10 @@ abstract contract RedstoneConsumerBase is CalldataExtractor {
 
     // Updating helpful arrays
     {
+      uint256 feedIdLength = dataFeedIds.length; /// Cache feed length so it does not need to calculate it each time
       bytes32 dataPointDataFeedId;
       uint256 dataPointValue;
-      for (uint256 dataPointIndex = 0; dataPointIndex < dataPointsCount; dataPointIndex++) {
+      for (uint256 dataPointIndex; dataPointIndex < dataPointsCount; ++dataPointIndex) { /// Remove 0 assignment since uint256 has default value of 0
         // Extracting data feed id and value for the current data point
         (dataPointDataFeedId, dataPointValue) = _extractDataPointValueAndDataFeedId(
           calldataNegativeOffset,
@@ -237,10 +239,10 @@ abstract contract RedstoneConsumerBase is CalldataExtractor {
         );
 
         for (
-          uint256 dataFeedIdIndex = 0;
-          dataFeedIdIndex < dataFeedIds.length;
-          dataFeedIdIndex++
-        ) {
+          uint256 dataFeedIdIndex;
+          dataFeedIdIndex < feedIdLength;
+          ++dataFeedIdIndex
+        ) { /// Cache .length again, remove 0 assignment to dataFeedIdIndex, reverse order on ++
           if (dataPointDataFeedId == dataFeedIds[dataFeedIdIndex]) {
             uint256 bitmapSignersForDataFeedId = signersBitmapForDataFeedIds[dataFeedIdIndex];
 
@@ -292,10 +294,11 @@ abstract contract RedstoneConsumerBase is CalldataExtractor {
     uint256[][] memory valuesForDataFeeds,
     uint256[] memory uniqueSignerCountForDataFeedIds
   ) private view returns (uint256[] memory) {
-    uint256[] memory aggregatedValues = new uint256[](valuesForDataFeeds.length);
+    uint256 valuesForDataFeedsLen = valuesForDataFeeds.length; /// Cache feed length so it does not need to calculate it each time
+    uint256[] memory aggregatedValues = new uint256[](valuesForDataFeedsLen);
     uint256 uniqueSignersThreshold = getUniqueSignersThreshold();
 
-    for (uint256 dataFeedIndex = 0; dataFeedIndex < valuesForDataFeeds.length; dataFeedIndex++) {
+    for (uint256 dataFeedIndex; dataFeedIndex < valuesForDataFeedsLen; ++dataFeedIndex) { /// Cache feed values length, remove 0 assignment, remove ++ order
       if (uniqueSignerCountForDataFeedIds[dataFeedIndex] < uniqueSignersThreshold) {
         revert InsufficientNumberOfUniqueSigners(
           uniqueSignerCountForDataFeedIds[dataFeedIndex],
