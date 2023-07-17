@@ -5,6 +5,8 @@ import {
   RelayerConfig,
 } from "./types";
 
+const DEFAULT_ADAPTER_CONTRACT_TYPE = "price-feeds";
+
 export const makeConfigProvider = (
   manifest: OnChainRelayerManifest,
   env: OnChainRelayerEnv
@@ -30,6 +32,8 @@ export const makeConfigProvider = (
     dataFeeds: Object.keys(manifest.priceFeeds),
     updateConditions: updateConditions,
     minDeviationPercentage: deviationPercentage,
+    adapterContractType:
+      manifest.adapterContractType ?? DEFAULT_ADAPTER_CONTRACT_TYPE,
     ...env,
   });
 };

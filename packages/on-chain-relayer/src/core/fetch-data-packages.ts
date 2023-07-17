@@ -11,14 +11,15 @@ const MILLISECONDS_IN_ONE_MINUTE = 60 * 1000;
 
 export async function fetchDataPackages(
   config: RelayerConfig,
+  uniqueSignersThreshold: number,
   valuesFromContract: ValuesForDataFeeds,
   isHistorical: boolean = false
 ) {
-  const { dataServiceId, uniqueSignersCount, dataFeeds } = config;
+  const { dataServiceId, dataFeeds } = config;
 
   const requestParams = {
     dataServiceId,
-    uniqueSignersCount,
+    uniqueSignersCount: uniqueSignersThreshold,
     dataFeeds,
     valuesToCompare: valuesFromContract,
   };

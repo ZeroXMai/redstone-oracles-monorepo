@@ -6,13 +6,14 @@ import {
   getUpdatePricesArgs,
   UpdatePricesArgs,
 } from "./get-update-prices-args";
-import { IRedstoneAdapter } from "../../typechain-types";
+import { RedstoneAdapterBase } from "../../typechain-types";
 import { config } from "../config";
 
 import { fetchDataPackages } from "../core/fetch-data-packages";
+import { getUniqueSignersThresholdFromContract } from "../core/contract-interactions/get-unique-signers-threshold";
 
 export const getIterationArgs = async (
-  adapterContract: IRedstoneAdapter
+  adapterContract: RedstoneAdapterBase
 ): Promise<{
   shouldUpdatePrices: boolean;
   args?: UpdatePricesArgs;
@@ -22,6 +23,10 @@ export const getIterationArgs = async (
   const { dataFeeds, updateConditions } = relayerConfig;
 
   const { lastUpdateTimestamp } = await getLastRoundParamsFromContract(
+    adapterContract
+  );
+
+  const uniqueSignersThreshold = await getUniqueSignersThresholdFromContract(
     adapterContract
   );
 
@@ -37,12 +42,18 @@ export const getIterationArgs = async (
   }
   const dataPackages = await fetchDataPackages(
     relayerConfig,
+    uniqueSignersThreshold,
     valuesFromContract
   );
   const olderDataPackagesPromise =
     shouldCheckValueDeviation &&
     (relayerConfig.fallbackOffsetInMinutes ?? 0) > 0
-      ? fetchDataPackages(relayerConfig, valuesFromContract, true)
+      ? fetchDataPackages(
+          relayerConfig,
+          uniqueSignersThreshold,
+          valuesFromContract,
+          true
+        )
       : undefined;
 
   const { shouldUpdatePrices, warningMessage } = await shouldUpdate(
@@ -50,6 +61,7 @@ export const getIterationArgs = async (
       dataPackages,
       olderDataPackagesPromise,
       valuesFromContract,
+      uniqueSignersThreshold,
       lastUpdateTimestamp,
     },
     relayerConfig

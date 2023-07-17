@@ -25,6 +25,7 @@ describe("should-update", () => {
         dataPackages,
         valuesFromContract: smallerValueDiff,
         lastUpdateTimestamp,
+        uniqueSignersThreshold: 2,
       },
       config()
     );
@@ -50,6 +51,7 @@ describe("should-update", () => {
         dataPackages,
         valuesFromContract: biggerValueDiff,
         lastUpdateTimestamp,
+        uniqueSignersThreshold: 2,
       },
       config()
     );
@@ -71,6 +73,7 @@ describe("should-update", () => {
         dataPackages,
         valuesFromContract: smallerValueDiff,
         lastUpdateTimestamp,
+        uniqueSignersThreshold: 2,
       },
       config()
     );
@@ -97,6 +100,7 @@ describe("should-update", () => {
         dataPackages,
         valuesFromContract: sameValue,
         lastUpdateTimestamp,
+        uniqueSignersThreshold: 2,
       },
       config()
     );
@@ -120,6 +124,7 @@ describe("should-update", () => {
         dataPackages,
         valuesFromContract: sameValue,
         lastUpdateTimestamp,
+        uniqueSignersThreshold: 2,
       },
       config()
     );

@@ -4,6 +4,7 @@ export interface Context {
   dataPackages: DataPackagesResponse;
   valuesFromContract: ValuesForDataFeeds;
   lastUpdateTimestamp: number;
+  uniqueSignersThreshold: number;
   olderDataPackagesPromise?: Promise<DataPackagesResponse>;
 }
 
@@ -22,6 +23,7 @@ export interface OnChainRelayerManifest {
     timeSinceLastUpdateInMilliseconds?: number;
   };
   adapterContract: string;
+  adapterContractType?: string;
   dataServiceId: string;
   priceFeeds: {
     [dataFeedId: string]: string /* PriceFeed contract address */;
@@ -37,7 +39,6 @@ export interface RelayerConfig {
   privateKey: string;
   adapterContractAddress: string;
   dataServiceId: string;
-  uniqueSignersCount: number;
   dataFeeds: string[];
   gasLimit: number;
   updateConditions: ConditionCheckNames[];
@@ -54,10 +55,8 @@ export type OnChainRelayerEnv = {
   relayerIterationInterval: number;
   rpcUrl: string;
   privateKey: string;
-  uniqueSignersCount: number;
   gasLimit: number;
   healthcheckPingUrl?: string;
-  adapterContractType: string;
   expectedTxDeliveryTimeInMS: number;
   isArbitrumNetwork: boolean;
   fallbackOffsetInMinutes: number;
